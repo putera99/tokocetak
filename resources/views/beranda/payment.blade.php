@@ -36,6 +36,8 @@
                     <input name="nope" id="nope" type="hidden" value="{{ $arrData['nope'] }}"/>
                     <input name="alamat" id="alamat" type="hidden" value="{{ $arrData['alamat'] }}"/>
                     <input name="biayaKirim" id="biayaKirim" type="hidden" value="{{ $arrData['biayaKirim'] }}"/>
+                    <input name="layanan" id="layanan" type="hidden" value="{{ $arrData['layanan'] }}"/>
+                    <input name="estimasi" id="estimasi" type="hidden" value="{{ $arrData['estimasi'] }}"/>
                     
                         <div class="table-responsive-lg" style="font-size: 11px;">
                         <legend>Informasi Alamat Pengririman</legend>
@@ -220,7 +222,9 @@
             nope: $('#nope').val(),
             alamat: $('#alamat').val(),
             nama1: $('#nama1').val(),
-            biayaKirim: $('#biayaKirim').val()
+            biayaKirim: $('#biayaKirim').val(),
+            layanan: $('#layanan').val(),
+            estimasi: $('#estimasi').val()
         },
         function (data, status) {
             // console.log(data);
@@ -251,7 +255,9 @@
                         nope: $('#nope').val(),
                         alamat: $('#alamat').val(),
                         nama1: $('#nama1').val(),
-                        biayaKirim: $('#biayaKirim').val()
+                        biayaKirim: $('#biayaKirim').val(),
+                        layanan: $('#layanan').val(),
+                        estimasi: $('#estimasi').val()
                     });
                 },
                 // Optional
@@ -279,7 +285,9 @@
                         nope: $('#nope').val(),
                         alamat: $('#alamat').val(),
                         nama1: $('#nama1').val(),
-                        biayaKirim: $('#biayaKirim').val()
+                        biayaKirim: $('#biayaKirim').val(),
+                        layanan: $('#layanan').val(),
+                        estimasi: $('#estimasi').val()
                     });
                 },
                 // Optional
@@ -307,7 +315,9 @@
                         nope: $('#nope').val(),
                         alamat: $('#alamat').val(),
                         nama1: $('#nama1').val(),
-                        biayaKirim: $('#biayaKirim').val()
+                        biayaKirim: $('#biayaKirim').val(),
+                        layanan: $('#layanan').val(),
+                        estimasi: $('#estimasi').val()
                     });
                 }
             });

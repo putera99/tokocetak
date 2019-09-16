@@ -121,5 +121,40 @@ class MyHelper
         }
     }
     
+    public function get_jne_services($data)
+    {
+        // print_r(env('JNE_API_TARIF'));exit;
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+			CURLOPT_URL => env('JNE_API_TARIF'),
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 60,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "POST",
+			CURLOPT_POSTFIELDS => "username=".env('JNE_API_USERNAME')."&api_key=".env('JNE_API_KEY')."&from=".$data['from']."&thru=".$data['thru']."&weigth=".$data['weigth']."",
+			CURLOPT_HTTPHEADER => array(
+                "Content-type: application/x-www-form-urlencoded"
+			),
+        ));
+        
+
+        $response = curl_exec($curl);
+		$err = curl_error($curl);
+
+        // print_r($response);exit;
+		if($err){
+            curl_close($curl);
+            $data = json_decode($err);
+            return $data;
+		}else{
+            curl_close($curl);
+            $data = json_decode($response);
+            return $data;
+        }
+
+    }
 
 }

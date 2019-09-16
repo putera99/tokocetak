@@ -18,6 +18,8 @@ use App\Models\UserAddress;
 use App\Models\Provinsi;
 use App\Models\PostalCode;
 use App\Models\TikiTarif;
+use App\Models\JnePos;
+use App\Models\JneTarif;
 
 use Veritrans_Config;
 use Veritrans_Snap;
@@ -267,22 +269,38 @@ class Cart_controller extends Controller
 
 	public function payment_method(Request $request)
 	{
-		// print_r(\Cart::content());exit;
+		// print_r($request->all());exit;
 
-		$this->validate($request,[
-			'_token'=>'required',
-			'tokenCourier'=>'required',
-			'nama1'=>'required',
-			'provinsi1'=>'required',
-			'kota1'=>'required',
-			'kecamatan1'=>'required',
-			'kelurahan1'=>'required',
-			'kurir'=>'required',
-			'kode_pos'=>'required',
-			'nope'=>'required',
-			'alamat'=>'required'
-		]);
-		
+		if($request->kurir=='tiki'){
+			$this->validate($request,[
+				'_token'=>'required',
+				'tokenCourier'=>'required',
+				'nama1'=>'required',
+				'provinsi1'=>'required',
+				'kota1'=>'required',
+				'kecamatan1'=>'required',
+				'kelurahan1'=>'required',
+				'kurir'=>'required',
+				'kode_pos'=>'required',
+				'nope'=>'required',
+				'alamat'=>'required'
+			]);
+		}
+
+		else{
+			$this->validate($request,[
+				'_token'=>'required',
+				'nama1'=>'required',
+				'provinsi1'=>'required',
+				'kota1'=>'required',
+				'kecamatan1'=>'required',
+				'kelurahan1'=>'required',
+				'kurir'=>'required',
+				'kode_pos'=>'required',
+				'nope'=>'required',
+				'alamat'=>'required'
+			]);
+		}
 		// print_r($request->input());exit;
 		$tokenCourier = $request->tokenCourier;
 		$userAddr = UserAddress::where('UserID','=',\Auth::user()->id)->where('IsDefault',1)->first();
@@ -323,11 +341,23 @@ class Cart_controller extends Controller
 			// print_r($cr);exit;
 		}
 
-		$biayaKirim = (float)$layananNya[2];
-		$service = $layananNya[1];
-		$estimasi = $layananNya[3];
+		if($request->kurir=='tiki'){
+			$biayaKirim = (float)$layananNya[2];
+			$service = $layananNya[1];
+			$estimasi = $layananNya[3];
+			$totalPrice = (float)$totalPrice + (float)$layananNya[2];
+		}
+		if($request->kurir=='jne'){
+			// print_r($layananNya);exit;
+			$biayaKirim = (float)$layananNya[4];
+			$service = $layananNya[3];
+			$estimasi = $layananNya[1];
+			$totalPrice = (float)$totalPrice + (float)$layananNya[4];
+			if($layananNya[1]=='null'){
+				$estimasi = "0";
+			}
+		}
 
-		$totalPrice = (float)$totalPrice + (float)$layananNya[2];
 		$value=\Config::get('services.midtrans.clientKey');
 		
 		// print_r($biayaKirim);exit;
@@ -511,6 +541,7 @@ class Cart_controller extends Controller
 	public function unfinish_payment(Request $request)
 	{
 		// print_r($request->all());exit;
+		
 		$title = 'TokoCetak | Pending Payment';
 		$prodCategories = ProductCategories::where('Status',1)->get();
 		$dataMenu = TMenu::where('Status',1)->get();
@@ -549,7 +580,7 @@ class Cart_controller extends Controller
 				'kode_pos'=>$request->kode_pos,
 				'nope'=>$request->nope,
 				'alamat'=>$request->alamat,
-				'layanan'=>strtoupper($request->kurir) . '-' .(string)$request->biayaKirim,
+				'layanan'=>strtoupper($request->layanan) . '-' .(string)$request->biayaKirim,
 				'ongkir'=>$request->biayaKirim,
 			]);
 
@@ -865,6 +896,34 @@ class Cart_controller extends Controller
 		// print_r($tikiServices);exit;
 		return response()->json([
 			'result'=>$tikiServices
+		]);
+	}
+
+	public function get_layanan_jne(Request $request)
+	{
+		/*SEMENTARA DEFAULT KEPU SELATAN*/
+		$from = 'CGK10000';
+		$postalCode = JnePos::where('KodePos','=',$request->kodePos)->select('Dest')->first()['Dest'];
+		$thru = JneTarif::where('Area','=',$postalCode)->first();
+		
+		$weigth = 0;
+
+		foreach (\Cart::content() as $key => $value) {
+            $weigth += $value->weigth;
+        }
+
+		$data = array(
+			'from'=>$from,
+			'thru'=>$thru['Area'],
+			'weigth'=>$weigth	
+		);
+
+		$MyHelper = new MyHelper();
+		$jneServices = $MyHelper->get_jne_services($data);
+
+		// print_r($jneServices);exit;
+		return response()->json([
+			'result'=>$jneServices
 		]);
 	}
 	// public function bayar_guide(){

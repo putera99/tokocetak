@@ -181,6 +181,14 @@ Route::group(['middleware'=>'auth'],function(){
 		'as'    =>  'get_layanan_tiki'
 	])->middleware('auth');
 	
+
+	/* AJAX POST untuk service tarif JNE */
+	Route::post('/get_layanan_jne',[
+		'uses'  =>  'Cart_controller@get_layanan_jne',
+		'as'    =>  'get_layanan_jne'
+	])->middleware('auth');
+	
+
 	Route::post('/submit_payment',[
 		'uses'  =>  'Cart_controller@submit_payment',
 		'as'    =>  'submit'

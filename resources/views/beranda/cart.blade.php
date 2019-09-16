@@ -26,7 +26,7 @@
 							    ?>
 								<form id="cartForm">
 									<input type="hidden" name="rowId" id="rowId" class="rowId" value="{{ $ct->rowId }}" />
-									<div class="cart_item_image"><img src="{{ asset('uploads/'.$gambar->gambar->FotoThumbnail) }}" alt=""></div>
+									<div class="cart_item_image"><img style="max-width:100%;max-height:100%;" src="{{ asset('uploads/'.$gambar->gambar->FotoThumbnail) }}" alt=""></div>
 									<div class="cart_item_info d-flex flex-md-row flex-column justify-content-between">
 										<div class="cart_item_name cart_info_col">
 											<div class="cart_item_title">Name</div>

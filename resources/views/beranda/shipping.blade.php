@@ -12,6 +12,13 @@
     src: url("{{asset('onetech/fonts/glyphicons-halflings-regular.eot')}}");
     src: url("{{asset('onetech/fonts/glyphicons-halflings-regular.eot?#iefix')}}") format('embedded-opentype'), url("{{asset('onetech/fonts/glyphicons-halflings-regular.woff')}}") format('woff'), url("{{asset('onetech/fonts/glyphicons-halflings-regular.ttf')}}") format('truetype'), url("{{asset('onetech/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular')}}") format('svg');
 } */
+#jneLogo{
+    margin-top:-13%;
+    /* margin-bottom: -10%; */
+}
+#tikiLogo{
+    margin-top: -5%;
+}
 </style>
 
 <div class="cart_section">
@@ -88,14 +95,18 @@
                     </div> -->
                     
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label" >Kurir</label>
-                        <div class="col-sm-4">
+                        <label class="col-lg-4 col-form-label" >Kurir</label>
+                        <div class="col-lg-4">
                             <select class="kurir form-control" id="kurir" name="kurir" style="margin: 0px; 0px; 0px; 0px;">
                                 <option value="">-- Please Select --</option>
                                 <option value="tiki">TIKI</option>
+                                <option value="jne">JNE</option>
                             </select>
+                        </div>
+                        <div class="col-lg-4">
                             <br>
-                            <img id="tikiLogo" style="max-width:50%;display:none;" src="{{asset('images/logo/tiki-logo.png')}}" class="img-fluid" alt="Responsive image">
+                            <img id="jneLogo" style="max-width:25%;display:none;" src="{{asset('images/logo/jne2.png')}}" class="img-fluid" alt="Responsive image">
+                            <img id="tikiLogo" style="max-width:30%;display:none;" src="{{asset('images/logo/tiki-logo.png')}}" class="img-fluid" alt="Responsive image">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -188,7 +199,6 @@
             })
         })
         
-        //  TEST API
         $("#kurir").on('change',function(e){
             e.preventDefault();
             $("#est").html("");
@@ -198,7 +208,9 @@
             var kode_pos = $("#kode_pos").val();
 
             if(kurir=='tiki'){
+
                 $("#tikiLogo").css("display","block");
+                $("#jneLogo").css("display","none");
                     $.ajax({
                     url: "{{route('get_tiki_token')}}",
                     type: 'POST',
@@ -218,8 +230,6 @@
                                     
                                     //  RETURN DATA FROM API NO ERROR
                                     if(!r.result.msg){
-                                        // console.log(r.result.response);
-                                        // var hasil = '<option value="">-- Please Select --</option>';
                                         $.each(r.result.response,function(i,v){
                                             var layanan = v.SERVICE + "-" + v.DESCRIPTION + "-" + v.TARIFF + "-" + v.EST_DAY + "-" + v.KGP;
                                             var textLayanan = v.DESCRIPTION + ' - ' + v.SERVICE + ' - ' + v.TARIFF;
@@ -233,8 +243,6 @@
                                             $('#layananNya').append(hasil);
 
                                             $("#layananNya").on('change',function(e){
-                                                // console.log($(this).find(':selected').attr('data-est'));
-                                                // console.log($(this).val());
                                                 if($(this).val()!='-- Please Select --'){
                                                     $("#est").html("Estimasi Sampai " + $(this).find(':selected').attr('data-est') + " Hari");
                                                 }
@@ -247,16 +255,59 @@
                                 }
                             })
                         }
-                        // console.log(data);
-                        // alert("adsadasd");
-                        
-
                     }
 			    })
             }
-            else{
+            if(kurir=='jne'){
+                var kodePos = $("#kode_pos").val();
                 $("#tikiLogo").css("display","none");
+                $("#jneLogo").css("display","block");
+                $.ajax({
+                    url: "{{route('get_layanan_jne')}}",
+                    type: 'POST',
+                    data: {_token: "{{ csrf_token() }}", kurir:kurir, kodePos:kodePos},
+                    dataType: 'JSON',
+                    success: function (data){
+                        //  RETURN DATA FROM API NO ERROR
+                        if(data.result.price){
+                            console.log(data.result.price);
+                            $.each(data.result.price,function(i,v){
+                                var layanan = v.etd_from + "-" + v.etd_thru + "-" + v.goods_type + "-" + v.service_display + "-" + v.price;
+                                var textLayanan = v.service_display + ' - ' + v.price;
+                                var dataEst = v.etd_thru;
+
+                                if(!dataEst){
+                                    dataEst = "0";
+                                }
+
+                                var hasil = '';
+                                hasil += '<option data-est="'+dataEst+'" value="'+layanan+'">';
+                                hasil += textLayanan;
+                                hasil += '</option>';
+
+                                $('#layananNya').append(hasil);
+                                
+                                $("#layananNya").on('change',function(e){
+                                    if($(this).val()!='-- Please Select --'){
+                                        $("#est").html("Estimasi Sampai " + $(this).find(':selected').attr('data-est') + " Hari");
+                                    }
+                                    if($(this).val()=='-- Please Select --'){
+                                        $("#est").html("");
+                                    }
+                                })
+                            })
+                        }
+                        else{
+                            var err = data.result.error
+                            alert(err);
+                        }
+                    }
+                })
             }
+            // else{
+            //     $("#tikiLogo").css("display","none");
+            //     $("#jneLogo").css("display","none");
+            // }
 
         });
 

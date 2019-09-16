@@ -11,6 +11,4 @@ class PostalCode extends Model
     public $timestamps = false;
     protected $casts = ['ID'=>'string'];
 
-    
-
 }
