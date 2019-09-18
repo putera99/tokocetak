@@ -95,9 +95,11 @@
 
 
 	<!-- Recently Viewed -->
-
+	@if(\Auth::user())
 	@include('beranda.layouts1.recent_view')
-
+	@else
+	@include('beranda.layouts1.most_viewed')
+	@endif
 	<!-- Brands -->
 
 	@include('beranda.layouts1.brands')

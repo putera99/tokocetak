@@ -17,6 +17,7 @@ use App\Models\ProductCategories;
 use App\Models\InfoProductLastView;
 use App\Models\InfoProductFlashSell;
 
+use Uuid;
 use Cart;
 use Session;
 use Wishlist;
@@ -73,6 +74,52 @@ class Beranda_controller extends Controller
         // print_r($headerColumn);exit;   
         $hitung = count(\App\Models\viewStoreProducts::where('StoreProductStatus',1)->where('ProductName',str_replace('-',' ', $p))->get());
 
+        if(\Auth::user()){
+
+            $customerID = \Auth::user()->id;
+            
+            $checkLastViewed = InfoProductLastView::where('StoreProductID','=',$_GET['id'])->where('CustomerID','=',$customerID)->get();
+            $maxCustomerLastViewed = InfoProductLastView::where('CustomerID','=',$customerID)->get();
+
+            if($checkLastViewed->count() > 0){
+                InfoProductLastView::where('StoreProductID','=',$_GET['id'])->where('CustomerID','=',$customerID)->update(['updated_at'=>date('Y-m-d H:i:s')]);
+            }
+            else if($maxCustomerLastViewed->count() == 10){
+                
+                if($checkLastViewed->count() > 0)
+                {   
+                    InfoProductLastView::where('StoreProductID','=',$_GET['id'])->where('CustomerID','=',$customerID)->update(['updated_at'=>date('Y-m-d H:i:s')]);
+                }
+                else{
+                    $lastID = InfoProductLastView::where('CustomerID',$customerID)->orderBy('ID','ASC')->first()['ID'];
+                    InfoProductLastView::where('ID','=',$lastID)->delete();
+                    
+                    $arrData = array(
+                        'CustomerID'=>$customerID,
+                        'StoreProductID'=>$_GET['id'],
+                        'Sorting'=>0,
+                        'Active'=>1,
+                        'sys_created_at'=>date('Y-m-d H:i:s'),
+                        'updated_at'=>null
+                    );
+        
+                    InfoProductLastView::insert($arrData);
+                }
+            }
+            else{
+                $arrData = array(
+                    'CustomerID'=>$customerID,
+                    'StoreProductID'=>$_GET['id'],
+                    'Sorting'=>0,
+                    'Active'=>1,
+                    'sys_created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=>null
+                );
+    
+                InfoProductLastView::insert($arrData);
+            }
+
+        }
         // Recent_view::insert([
         //     'recent_view_id'=>\Uuid::generate(4),
         //     'product_id'=>$id,

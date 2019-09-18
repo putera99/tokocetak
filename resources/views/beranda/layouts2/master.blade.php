@@ -57,9 +57,11 @@
 	@yield('content')
 
 	<!-- Recently Viewed -->
-
+	@if(\Auth::user())
 	@include('beranda.layouts2.recent_view')
-
+	@else
+	@include('beranda.layouts2.most_viewed')
+	@endif
 	<!-- Brands -->
 
 
