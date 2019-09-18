@@ -119,7 +119,8 @@
                         <label class="col-sm-4 col-form-label"><span class="badge badge-pill badge-success" id="est" style="font-size:15px;"></span></label>
                     </div>
                     <div class="cart_buttons">
-						<button class="btn btn-md btn-success">Selanjutnya</button>
+                        <button type="button" class="btn btn-md btn-primary"><a href="{{ url('checkout/index') }}" style="color:#fff;">Sebelumnya</a></button>
+						<button type="submit" class="btn btn-md btn-success">Selanjutnya</button>
 					</div>
                 </form>
             </div>
@@ -258,7 +259,7 @@
                     }
 			    })
             }
-            if(kurir=='jne'){
+            else if(kurir=='jne'){
                 var kodePos = $("#kode_pos").val();
                 $("#tikiLogo").css("display","none");
                 $("#jneLogo").css("display","block");
@@ -272,7 +273,7 @@
                         if(data.result.price){
                             console.log(data.result.price);
                             $.each(data.result.price,function(i,v){
-                                var layanan = v.etd_from + "-" + v.etd_thru + "-" + v.goods_type + "-" + v.service_display + "-" + v.price;
+                                var layanan = v.etd_from + "-" + v.etd_thru + "-" + v.goods_type + "-" + v.service_code + "-" + v.price;
                                 var textLayanan = v.service_display + ' - ' + v.price;
                                 var dataEst = v.etd_thru;
 
@@ -304,10 +305,10 @@
                     }
                 })
             }
-            // else{
-            //     $("#tikiLogo").css("display","none");
-            //     $("#jneLogo").css("display","none");
-            // }
+            else{
+                $("#tikiLogo").css("display","none");
+                $("#jneLogo").css("display","none");
+            }
 
         });
 

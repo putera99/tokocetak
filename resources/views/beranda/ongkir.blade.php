@@ -110,8 +110,8 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<button type="button" class="btn btn-md btn-success" data-toggle="modal" data-target="#modalAddress">Tampilkan Informasi Alamat</button>	
-				<button type="button" class="btn btn-md btn-success" data-toggle="modal" data-target="#newAddress">Tambah Alamat Baru</button>
+				<button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modalAddress">Tampilkan Informasi Alamat</button>	
+				<button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#newAddress">Tambah Alamat Baru</button>
 			</div>
 		</div>
 	</div>
@@ -279,7 +279,8 @@
 						</div>
 					</div>
 					<div class="cart_buttons">
-						<button class="btn btn-md btn-success">Selanjutnya</button>
+						<button type="button" class="btn btn-md btn-primary"><a href="{{ url('cart') }}" style="color:#fff;">Sebelumnya</a></button>
+						<button type="submit" class="btn btn-md btn-success">Selanjutnya</button>
 					</div>
 				</form>
 				@endif

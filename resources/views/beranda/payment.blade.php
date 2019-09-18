@@ -176,6 +176,7 @@
                     </div> -->
 
                     <div class="cart_buttons">
+                        <button type="button" class="btn btn-md btn-primary" id="prev">Sebelumnya</a></button>
 						<button class="btn btn-md btn-success" id="submit">Submit Pembayaran</button>
 					</div>
 
@@ -186,17 +187,42 @@
 </div>
 
 <script src="{{asset('onetech/js/jquery-3.3.1.min.js')}}"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-
-        
-    });
-</script>
 <script
     src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
 <script src="{{ !config('services.midtrans.isProduction') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('services.midtrans.clientKey') }}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var postbackURL = "{{ env('APP_URL') }}" + "/shipping_method";
+        $('#prev').click(function(e){
+            // console.log(postbackURL);
+            $.redirect(postbackURL,
+            {
+                _token: '{{ csrf_token() }}',
+                OrderID: $('#OrderID').val(),
+                StoreProductID: $('#StoreProductID').val(),
+                brt: $('#brt').val(),
+                berat: $('#berat').val(),
+                qty: $('#qty').val(),
+                totalPrice: $('#totalPrice').val(),
+                price: $('#price').val(),
+                provinsi1: $('#provinsi1').val(),
+                kota1: $('#kota1').val(),
+                kecamatan1: $('#kecamatan1').val(),
+                kelurahan1: $('#kelurahan1').val(),
+                kurir: $('#kurir').val(),
+                kode_pos: $('#kode_pos').val(),
+                nope: $('#nope').val(),
+                alamat: $('#alamat').val(),
+                nama1: $('#nama1').val(),
+                biayaKirim: $('#biayaKirim').val(),
+                layanan: $('#layanan').val(),
+                estimasi: $('#estimasi').val()
+            });
+        })
+    })
+</script>
 <script type="text/javascript">
     function submitForm() {
         var redirectFinish = "{{ env('APP_URL') }}" + "/finish_payment";
